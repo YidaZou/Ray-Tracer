@@ -1,7 +1,0 @@
-Target dependency graph (3 targets)
-ZERO_CHECK in A6, no dependencies
-A6 in A6, depends on:
-ZERO_CHECK in A6 (explicit)
-ALL_BUILD in A6, depends on:
-A6 in A6 (explicit)
-ZERO_CHECK in A6 (explicit)

@@ -1,3 +1,11 @@
 /Users/young/CSCE441/A6/build/CMakeFiles/A6.dir
+/Users/young/CSCE441/A6/build/CMakeFiles/install.dir
 /Users/young/CSCE441/A6/build/CMakeFiles/ALL_BUILD.dir
 /Users/young/CSCE441/A6/build/CMakeFiles/ZERO_CHECK.dir
+/Users/young/CSCE441/glfw-3.3.8/debug/CMakeFiles/uninstall.dir
+/Users/young/CSCE441/glfw-3.3.8/debug/CMakeFiles/install.dir
+/Users/young/CSCE441/glfw-3.3.8/debug/CMakeFiles/ALL_BUILD.dir
+/Users/young/CSCE441/glfw-3.3.8/debug/CMakeFiles/ZERO_CHECK.dir
+/Users/young/CSCE441/glfw-3.3.8/debug/src/CMakeFiles/update_mappings.dir
+/Users/young/CSCE441/glfw-3.3.8/debug/src/CMakeFiles/glfw.dir
+/Users/young/CSCE441/glfw-3.3.8/debug/src/CMakeFiles/install.dir

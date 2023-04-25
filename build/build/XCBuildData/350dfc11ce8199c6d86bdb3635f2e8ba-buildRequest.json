@@ -1,0 +1,77 @@
+{
+  "_buildCommand2" : {
+    "command" : "prepareForIndexing",
+    "enableIndexBuildArena" : false,
+    "targets" : null
+  },
+  "buildCommand" : "build",
+  "configuredTargets" : [
+    {
+      "guid" : "79d790524d2b0366853206233f9f93cf300f7d5393831afa5e1c08edb337e813"
+    },
+    {
+      "guid" : "79d790524d2b0366853206233f9f93cf12880a3522dd06d904320baa5495ea2f"
+    },
+    {
+      "guid" : "79d790524d2b0366853206233f9f93cf139105bab0074f152d009c02fcb4d2bc"
+    },
+    {
+      "guid" : "79d790524d2b0366853206233f9f93cf5bb58326981481f57e23bc1e1a9640a2"
+    },
+    {
+      "guid" : "79d790524d2b0366853206233f9f93cf09766eb84fbfc4171648b161a22de5d9"
+    },
+    {
+      "guid" : "79d790524d2b0366853206233f9f93cf8fddb240bfe981b1d49f0c40a466703a"
+    },
+    {
+      "guid" : "79d790524d2b0366853206233f9f93cf932409fee18e290fd7f709f4bb6ac00e"
+    }
+  ],
+  "containerPath" : "/Users/young/CSCE441/A6/build/A6.xcodeproj",
+  "continueBuildingAfterErrors" : true,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "macosx",
+      "sdk" : "macosx12.3",
+      "sdkVariant" : "macos",
+      "supportedArchitectures" : [
+        "arm64e",
+        "arm64",
+        "x86_64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "",
+      "buildProductsPath" : "",
+      "derivedDataPath" : "/Users/young/Library/Developer/Xcode/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/young/Library/Developer/Xcode/DerivedData/A6-aedhzntprbigmcgrznxneivaegva/Index/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/young/Library/Developer/Xcode/DerivedData/A6-aedhzntprbigmcgrznxneivaegva/Index/PrecompiledHeaders",
+      "pchPath" : ""
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ENABLE_PREVIEWS" : "NO"
+        }
+      }
+    }
+  },
+  "qos" : "default",
+  "schemeCommand" : "launch",
+  "schemeCommand2" : "launch",
+  "shouldCollectMetrics" : false,
+  "showNonLoggedProgress" : true,
+  "useDryRun" : true,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}
