@@ -1,0 +1,14 @@
+Target dependency graph (7 targets)
+glfw in A6, no dependencies
+ZERO_CHECK in A6, no dependencies
+A6 in A6, depends on:
+glfw in A6 (explicit)
+ZERO_CHECK in A6 (explicit)
+ALL_BUILD in A6, depends on:
+A6 in A6 (explicit)
+glfw in A6 (explicit)
+ZERO_CHECK in A6 (explicit)
+install in A6, depends on:
+ALL_BUILD in A6 (explicit)
+uninstall in A6, no dependencies
+update_mappings in A6, no dependencies

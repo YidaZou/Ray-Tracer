@@ -14,12 +14,14 @@
 
 class Light{
 public:
-    Light(float x, float y, float z,
-          float r, float g, float b);
-    ~Light();
+    Light(glm::vec3 _pos,
+          float _intensity) :
+    pos(_pos), intensity(_intensity){}
     
-    float x,y,z;    //position
-    float r,g,b;    //color
+    ~Light(){}
+    
+    glm::vec3 pos;    //position
+    float intensity;    //intensity
 private:
     
 };

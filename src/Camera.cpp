@@ -1,80 +1,30 @@
-#define _USE_MATH_DEFINES
-#include <cmath> 
-#include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
-#include "Camera.h"
-#include "MatrixStack.h"
+//
+//  Camera.cpp
+//  A6
+//
+//  Created by Yida Zou on 4/25/23.
+//
 
-Camera::Camera() :
-    rotations(0.0, 0.0),
-    fovy((float)(45.0*M_PI/180.0)),
-	aspect(1.0f),
-	znear(0.1f),
-	zfar(1000.0f),
-	translations(0.0f, 0.0f, -5.0f),
-	rfactor(0.01f),
-	tfactor(0.001f),
-	sfactor(0.005f)
-{
-}
+#include "Camera.hpp"
 
-Camera::~Camera()
+Camera::Camera(glm::vec3 _pos, float _fov, int _width, int _height)
+:pos(_pos),fov(_fov),width(_width),height(_height)
 {
-}
+    //maps rays to pixels
+    //topLeft -> bottomRight
+    //aspect ratio is 1
+    float z = -1;
+    for(float i=0; i<width; i++){
+        for(float j=0; j<height; j++){
+            float x = (2*(i+0.5)/width - 1) * tan(fov * 0.5);
+            float y = (1 - 2*(j+0.5)/height) * tan(fov * 0.5);
+            std::shared_ptr<Ray> newR = std::make_shared<Ray>(i,height-1-j,glm::vec3(x,y,z));
+            rays.push_back(newR);
+            //std::cout << newP->x << std::endl;
+        }
+    }
+};
 
-void Camera::mouseClicked(float x, float y, bool shift, bool ctrl, bool alt)
-{
-	mousePrev.x = x;
-	mousePrev.y = y;
-	if(shift) {
-		state = Camera::TRANSLATE;
-	} else if(ctrl) {
-		state = Camera::SCALE;
-	} else {
-		state = Camera::ROTATE;
-	}
-}
+Camera::~Camera(){}
 
-void Camera::mouseMoved(float x, float y)
-{
-	glm::vec2 mouseCurr(x, y);
-	glm::vec2 dv = mouseCurr - mousePrev;
-	switch(state) {
-		case Camera::ROTATE:
-			rotations.x += rfactor * dv.x;
-            rotations.y += rfactor * dv.y;         
-                
-			break;
-		case Camera::TRANSLATE:
-			translations.x -= translations.z * tfactor * dv.x;
-			translations.y += translations.z * tfactor * dv.y;
-			break;
-		case Camera::SCALE:
-			translations.z *= (1.0f - sfactor * dv.y);
-			break;
-	}
-	mousePrev = mouseCurr;
-}
 
-void Camera::applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const
-{
-	// Modify provided MatrixStack
-	P->multMatrix(glm::perspective(fovy, aspect, znear, zfar));
-}
-
-void Camera::applyViewMatrixOld(std::shared_ptr<MatrixStack> MV) const
-{
-    MV->translate(translations);
-    MV->rotate(rotations.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    MV->rotate(rotations.x, glm::vec3(0.0f, 1.0f, 0.0f));
-}
-
-glm::mat4 Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV, glm::vec3 eye, glm::vec3 forw, float pitch) const
-{
-	MV->translate(translations);
-	MV->rotate(rotations.y, glm::vec3(1.0f, 0.0f, 0.0f));
-	MV->rotate(rotations.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 look = glm::lookAt(eye, eye+forw, glm::vec3(0,1,0));
-    MV->multMatrix(glm::lookAt(eye, eye+forw, glm::vec3(0,1,0)));
-    return look;
-}
