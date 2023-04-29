@@ -24,8 +24,11 @@ using namespace std;
 shared_ptr<Sphere> sphere1;
 shared_ptr<Sphere> sphere2;
 shared_ptr<Sphere> sphere3;
+shared_ptr<Plane> plane1;
+shared_ptr<Ellipsoid> ellipsoid1;
 vector<shared_ptr<Shape>> shapes;
 shared_ptr<Light> light1;
+shared_ptr<Light> light2;
 vector<shared_ptr<Light>> lights;
 
 shared_ptr<Camera> camera;
@@ -78,11 +81,6 @@ void render(shared_ptr<Camera> camera, vector<shared_ptr<Shape>> &shapes, vector
             }
         }
         if(closestShapeI != -1){   //checked last shape
-            /*
-            if(camera->rays[j]->x > 40 &&camera->rays[j]->x < 60 &&camera->rays[j]->y > 30 &&camera->rays[j]->y < 50){
-                cout<< closestShapeI << ": " << camera->rays[j]->x << ", " << camera->rays[j]->y <<endl;
-            }
-            */
             glm::vec3 color = blinnPhong(camera->rays[j], closestShapeI, camera, shapes, lights);
             image->setPixel(camera->rays[j]->x, camera->rays[j]->y, color.r, color.g, color.b);
         }
@@ -122,12 +120,36 @@ int main(int argc, char **argv)
                                          glm::vec3(0.1, 0.1, 0.1), 100);
             shapes.push_back(sphere3);
             
-            light1 = make_shared<Light>(glm::vec3(-2,1,1), 1);
+            light1 = make_shared<Light>(glm::vec3(1,2,2), 0.5);
             lights.push_back(light1);
+            light2 = make_shared<Light>(glm::vec3(-1,2,-1), 0.5);
+            lights.push_back(light2);
             break;
             
         case 3:
+            ellipsoid1 = make_shared<Ellipsoid>(glm::vec3(0.5, 0.0, 0.5), 1.0,
+                                             glm::vec3(1.0, 0.0, 0.0),
+                                             glm::vec3(1.0, 1.0, 0.5),
+                                             glm::vec3(0.1, 0.1, 0.1), 100);
+            ellipsoid1->ellipseScale = glm::vec3(0.5,0.6,0.2);
+            ellipsoid1->ellipseTransform();
+            shapes.push_back(ellipsoid1);
+            sphere1 = make_shared<Sphere>(glm::vec3(-0.5, 0.0, -0.5), 1.0,
+                                         glm::vec3(0.0, 1.0, 0.0),
+                                         glm::vec3(1.0, 1.0, 0.5),
+                                         glm::vec3(0.1, 0.1, 0.1), 100);
+            shapes.push_back(sphere1);
+            plane1 = make_shared<Plane>(glm::vec3(0.0, -1.0, 0.0), 1.0,
+                                         glm::vec3(1.0, 1.0, 1.0),
+                                         glm::vec3(0.0, 0.0, 0.0),
+                                         glm::vec3(0.1, 0.1, 0.1), 0);
+            plane1->rotation = glm::vec3(0,1,0);
+            shapes.push_back(plane1);
             
+            light1 = make_shared<Light>(glm::vec3(1,2,2), 0.5);
+            lights.push_back(light1);
+            light2 = make_shared<Light>(glm::vec3(-1,2,-1), 0.5);
+            lights.push_back(light2);
             break;
         default:
             break;

@@ -79,7 +79,6 @@
 		6CD911EC1F9D44679E8AC139 /* nsgl_context.m in Sources */ = {isa = PBXBuildFile; fileRef = 40CF5FAC86EB4638846D5B26 /* nsgl_context.m */; };
 		6E7F8290576F41F5A7810D9B /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = A8B00AD4C5E7440691970A8D /* input.c */; };
 		6F65F11029F8468E005681E3 /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6F65F10F29F8468E005681E3 /* Image.cpp */; };
-		6FDE2F9229FC18E000AEECB3 /* Hit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FDE2F9029FC18E000AEECB3 /* Hit.cpp */; };
 		6FDE2F9429FC353B00AEECB3 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FDE2F9329FC353B00AEECB3 /* Camera.cpp */; };
 		7663A241045D49BB8AA370FD /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = A0E06922C4E140B8BB9E1EDE /* init.c */; };
 		7A20DBE05C264ED2AE22810F /* osmesa_context.c in Sources */ = {isa = PBXBuildFile; fileRef = BE22B308185340C6B71B4B60 /* osmesa_context.c */; };
@@ -169,8 +168,6 @@
 		6F65F10A29F7FCE9005681E3 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Camera.hpp; path = src/Camera.hpp; sourceTree = "<group>"; };
 		6F65F10E29F8466E005681E3 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Image.h; path = src/Image.h; sourceTree = "<group>"; };
 		6F65F10F29F8468E005681E3 /* Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Image.cpp; path = src/Image.cpp; sourceTree = "<group>"; };
-		6FDE2F9029FC18E000AEECB3 /* Hit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Hit.cpp; path = src/Hit.cpp; sourceTree = "<group>"; };
-		6FDE2F9129FC18E000AEECB3 /* Hit.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Hit.hpp; path = src/Hit.hpp; sourceTree = "<group>"; };
 		6FDE2F9329FC353B00AEECB3 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Camera.cpp; path = src/Camera.cpp; sourceTree = "<group>"; };
 		6FDE2F9829FC3DF700AEECB3 /* Light.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Light.hpp; path = src/Light.hpp; sourceTree = "<group>"; };
 		76D4840F27CA4052A7AC461E /* glfw_config.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = glfw_config.h; path = "/Users/young/CSCE441/glfw-3.3.8/debug/src/glfw_config.h"; sourceTree = "<absolute>"; };
@@ -265,7 +262,6 @@
 		1BF6CB81A55144678F9640DE /* Header Files */ = {
 			isa = PBXGroup;
 			children = (
-				6FDE2F9129FC18E000AEECB3 /* Hit.hpp */,
 				6FDE2F9829FC3DF700AEECB3 /* Light.hpp */,
 				6F65F10A29F7FCE9005681E3 /* Camera.hpp */,
 				134C0C9AE76246BF8D2CEFCC /* GLSL.h */,
@@ -358,7 +354,6 @@
 				6F65F10F29F8468E005681E3 /* Image.cpp */,
 				D4A1C0C9AB9D4BAE9D08C4D9 /* main.cpp */,
 				6FDE2F9329FC353B00AEECB3 /* Camera.cpp */,
-				6FDE2F9029FC18E000AEECB3 /* Hit.cpp */,
 			);
 			name = "Source Files";
 			sourceTree = "<group>";
@@ -616,7 +611,6 @@
 				8FB18D48F94B45A48EBA041A /* Shape.cpp in Sources */,
 				6FDE2F9429FC353B00AEECB3 /* Camera.cpp in Sources */,
 				6F65F11029F8468E005681E3 /* Image.cpp in Sources */,
-				6FDE2F9229FC18E000AEECB3 /* Hit.cpp in Sources */,
 				EDAFA48C120C4626A7257F53 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

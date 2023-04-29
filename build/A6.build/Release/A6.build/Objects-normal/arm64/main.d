@@ -250,5 +250,6 @@ dependencies: /Users/young/CSCE441/A6/src/main.cpp \
   /Users/young/CSCE441/glm-0.9.9.8/glm/gtc/type_ptr.inl \
   /Users/young/CSCE441/A6/src/Shape.h \
   /Users/young/CSCE441/A6/src/Camera.hpp \
+  /Users/young/CSCE441/A6/src/MatrixStack.h \
   /Users/young/CSCE441/A6/src/Image.h \
   /Users/young/CSCE441/A6/src/Light.hpp

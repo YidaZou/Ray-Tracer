@@ -7,6 +7,7 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include "Camera.hpp"
+#include "MatrixStack.h"
 
 class Shape{
 public:
@@ -34,7 +35,29 @@ public:
     using Shape::Shape;
     float intersection(glm::vec3 &p, std::shared_ptr<Ray> r, float near, float far);
 private:
-    //float r;    //radius
+
+};
+
+class Plane : public Shape{
+public:
+    //void initSphere(float _r){this->r = _r;}
+    using Shape::Shape;
+    float intersection(glm::vec3 &p, std::shared_ptr<Ray> r, float near, float far);
+    glm::vec3 rotation;
+private:
+
+};
+
+class Ellipsoid : public Shape{
+public:
+    //void initSphere(float _r){this->r = _r;}
+    using Shape::Shape;
+    float intersection(glm::vec3 &p, std::shared_ptr<Ray> r, float near, float far);
+    void ellipseTransform();
+    glm::vec3 ellipseScale;
+    glm::mat4 E;
+private:
+
 };
 
 #endif

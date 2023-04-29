@@ -149,4 +149,5 @@ dependencies: /Users/young/CSCE441/A6/src/Shape.cpp \
   /Users/young/CSCE441/glm-0.9.9.8/glm/vector_relational.hpp \
   /Users/young/CSCE441/glm-0.9.9.8/glm/integer.hpp \
   /Users/young/CSCE441/glm-0.9.9.8/glm/detail/func_integer.inl \
-  /Users/young/CSCE441/A6/src/Camera.hpp
+  /Users/young/CSCE441/A6/src/Camera.hpp \
+  /Users/young/CSCE441/A6/src/MatrixStack.h
