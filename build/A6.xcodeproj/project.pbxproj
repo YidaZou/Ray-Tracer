@@ -80,6 +80,7 @@
 		6E7F8290576F41F5A7810D9B /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = A8B00AD4C5E7440691970A8D /* input.c */; };
 		6F65F11029F8468E005681E3 /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6F65F10F29F8468E005681E3 /* Image.cpp */; };
 		6FDE2F9429FC353B00AEECB3 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FDE2F9329FC353B00AEECB3 /* Camera.cpp */; };
+		6FDE2F9B29FCAAC600AEECB3 /* raytri.c in Sources */ = {isa = PBXBuildFile; fileRef = 6FDE2F9A29FCAAC600AEECB3 /* raytri.c */; };
 		7663A241045D49BB8AA370FD /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = A0E06922C4E140B8BB9E1EDE /* init.c */; };
 		7A20DBE05C264ED2AE22810F /* osmesa_context.c in Sources */ = {isa = PBXBuildFile; fileRef = BE22B308185340C6B71B4B60 /* osmesa_context.c */; };
 		8FB18D48F94B45A48EBA041A /* Shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8530B88FDB254073AA2C8441 /* Shape.cpp */; };
@@ -170,6 +171,8 @@
 		6F65F10F29F8468E005681E3 /* Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Image.cpp; path = src/Image.cpp; sourceTree = "<group>"; };
 		6FDE2F9329FC353B00AEECB3 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Camera.cpp; path = src/Camera.cpp; sourceTree = "<group>"; };
 		6FDE2F9829FC3DF700AEECB3 /* Light.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Light.hpp; path = src/Light.hpp; sourceTree = "<group>"; };
+		6FDE2F9A29FCAAC600AEECB3 /* raytri.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = raytri.c; path = src/raytri.c; sourceTree = "<group>"; };
+		6FDE2F9C29FD936A00AEECB3 /* boundingBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = boundingBox.h; path = src/boundingBox.h; sourceTree = "<group>"; };
 		76D4840F27CA4052A7AC461E /* glfw_config.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = glfw_config.h; path = "/Users/young/CSCE441/glfw-3.3.8/debug/src/glfw_config.h"; sourceTree = "<absolute>"; };
 		7F9000064C4C4F6FA67BB937 /* silhouette_frag.glsl */ = {isa = PBXFileReference; explicitFileType = sourcecode; fileEncoding = 4; name = silhouette_frag.glsl; path = resources/silhouette_frag.glsl; sourceTree = SOURCE_ROOT; };
 		808A8D33FA6F4677A4BA6C54 /* ground_frag.glsl */ = {isa = PBXFileReference; explicitFileType = sourcecode; fileEncoding = 4; name = ground_frag.glsl; path = resources/ground_frag.glsl; sourceTree = SOURCE_ROOT; };
@@ -269,6 +272,7 @@
 				E6FC6A603293470680D48E2F /* Program.h */,
 				6F65F10E29F8466E005681E3 /* Image.h */,
 				BA0FD6752D9B4D6882DF62BC /* Shape.h */,
+				6FDE2F9C29FD936A00AEECB3 /* boundingBox.h */,
 				C9A0B424F29147F1B89005FA /* stb_image_write.h */,
 				90A6205BCF134C9AA42BAE90 /* tiny_obj_loader.h */,
 			);
@@ -353,6 +357,7 @@
 				8530B88FDB254073AA2C8441 /* Shape.cpp */,
 				6F65F10F29F8468E005681E3 /* Image.cpp */,
 				D4A1C0C9AB9D4BAE9D08C4D9 /* main.cpp */,
+				6FDE2F9A29FCAAC600AEECB3 /* raytri.c */,
 				6FDE2F9329FC353B00AEECB3 /* Camera.cpp */,
 			);
 			name = "Source Files";
@@ -609,6 +614,7 @@
 				2FB1690132EE4258B278BB4F /* MatrixStack.cpp in Sources */,
 				6CAF18D6EC174BA1A5E90A23 /* Program.cpp in Sources */,
 				8FB18D48F94B45A48EBA041A /* Shape.cpp in Sources */,
+				6FDE2F9B29FCAAC600AEECB3 /* raytri.c in Sources */,
 				6FDE2F9429FC353B00AEECB3 /* Camera.cpp in Sources */,
 				6F65F11029F8468E005681E3 /* Image.cpp in Sources */,
 				EDAFA48C120C4626A7257F53 /* main.cpp in Sources */,

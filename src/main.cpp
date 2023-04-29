@@ -4,10 +4,6 @@
 #include <cmath>
 #include <iostream>
 
-#define GLEW_STATIC
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -18,6 +14,11 @@
 #include "Camera.hpp"
 #include "Light.hpp"
 #include <algorithm>
+#include "raytri.c"
+#include "boundingBox.h"
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
 
 using namespace std;
 
@@ -32,8 +33,9 @@ vector<shared_ptr<Shape>> shapes;
 shared_ptr<Light> light1;
 shared_ptr<Light> light2;
 vector<shared_ptr<Light>> lights;
-
 shared_ptr<Camera> camera;
+
+bool motionBlur = false;
 
 glm::vec3 blinnPhong(shared_ptr<Ray> R, int &sI, glm::vec3 &origin, vector<shared_ptr<Shape>> &shapes, vector<shared_ptr<Light>> &lights, int recursion){
     if(recursion > 10){ //# of bounces
@@ -79,7 +81,7 @@ glm::vec3 blinnPhong(shared_ptr<Ray> R, int &sI, glm::vec3 &origin, vector<share
             }
         }
         if(closestShapeI != -1){
-            finalColor += blinnPhong(reflectedRay, closestShapeI, R->intersect, shapes, lights, recursion+1);
+            finalColor += shapes[sI]->reflectiveComponent * blinnPhong(reflectedRay, closestShapeI, R->intersect, shapes, lights, recursion+1);
         }
     }
     return finalColor;
@@ -97,8 +99,15 @@ void render(shared_ptr<Camera> camera, vector<shared_ptr<Shape>> &shapes, vector
             }
         }
         if(closestShapeI != -1){   //checked last shape
-            glm::vec3 finalColor = blinnPhong(camera->rays[j], closestShapeI, camera->pos, shapes, lights, 0);
-            finalColor = 255.0f*finalColor;
+            glm::vec3 color = blinnPhong(camera->rays[j], closestShapeI, camera->pos, shapes, lights, 0);
+            glm::vec3 finalColor;
+            if(motionBlur){
+                camera->rays[j]->color += color*0.8f;
+                finalColor = 255.0f*camera->rays[j]->color;
+            }else{
+                finalColor = 255.0f*color;
+            }
+            
             if (finalColor.r < 0){finalColor.r = 0;}
             if (finalColor.r > 255){finalColor.r = 255;}
             if (finalColor.g < 0){finalColor.g = 0;}
@@ -121,12 +130,61 @@ int main(int argc, char **argv)
     string imgName(argv[3]);
     float fov = (M_PI/180)*45;
     glm::vec3 origin = glm::vec3(0,0,5);
-    //glm::vec3 plane = glm::vec3(0,0,4);
-    camera = make_shared<Camera>(origin, fov, imgSize, imgSize);
+    if(scene == 8){
+        camera = make_shared<Camera>(glm::vec3(-3,0,0), (M_PI/180)*60, glm::vec3(1,0,0), imgSize, imgSize);
+    }else{
+        camera = make_shared<Camera>(origin, fov, glm::vec3(0,0,-1), imgSize, imgSize);
+    }
     auto image = make_shared<Image>(imgSize, imgSize);
     switch (scene) {
+        case 0:
+            sphere1 = make_shared<Sphere>(glm::vec3(0.5, -0.7, 0.5), 0.3,
+                                         glm::vec3(1.0, 0.0, 0.0),
+                                         glm::vec3(1.0, 1.0, 0.5),
+                                         glm::vec3(0.1, 0.1, 0.1), 100);
+            shapes.push_back(sphere1);
+            sphere2 = make_shared<Sphere>(glm::vec3(1.0, -0.7, 0.0), 0.3,
+                                         glm::vec3(0.0, 0.0, 1.0),
+                                         glm::vec3(1.0, 1.0, 0.5),
+                                         glm::vec3(0.1, 0.1, 0.1), 100);
+            shapes.push_back(sphere2);
+            
+            sphere3 = make_shared<Sphere>(glm::vec3(-0.5, 0.0, -0.5), 1.0,
+                                          glm::vec3(0.0, 0.0, 1.0),
+                                          glm::vec3(1.0, 1.0, 0.5),
+                                          glm::vec3(0.1, 0.1, 0.1), 100);
+            sphere3->reflective = true;
+            sphere3->reflectiveComponent = glm::vec3(0.3,0.3,0.3);
+            shapes.push_back(sphere3);
+            sphere4 = make_shared<Sphere>(glm::vec3(1.5, 0.0, -1.5), 1.0,
+                                          glm::vec3(0.0, 1.0, 0.0),
+                                          glm::vec3(1.0, 1.0, 0.5),
+                                          glm::vec3(0.1, 0.1, 0.1), 100);
+            sphere4->reflective = true;
+            sphere4->reflectiveComponent = glm::vec3(0.3,0.3,0.3);
+            shapes.push_back(sphere4);
+            
+            plane1 = make_shared<Plane>(glm::vec3(0.0, -1.0, 0.0), 1.0,
+                                         glm::vec3(1.0, 1.0, 1.0),
+                                         glm::vec3(0.0, 0.0, 0.0),
+                                         glm::vec3(0.1, 0.1, 0.1), 0);
+            plane1->rotation = glm::vec3(0,1,0);
+            shapes.push_back(plane1);
+            plane2 = make_shared<Plane>(glm::vec3(0.0, 0.0, -3.0), 1.0,
+                                         glm::vec3(1.0, 1.0, 1.0),
+                                         glm::vec3(0.0, 0.0, 0.0),
+                                         glm::vec3(0.1, 0.1, 0.1), 0);
+            plane2->rotation = glm::vec3(0,0,1);
+            shapes.push_back(plane2);
+            
+            light1 = make_shared<Light>(glm::vec3(-1,2,1), 0.5);
+            lights.push_back(light1);
+            light2 = make_shared<Light>(glm::vec3(0.5,-0.5,0.0), 0.5);
+            lights.push_back(light2);
+            break;
         case 1:
         case 2:
+        case 8:
             sphere1 = make_shared<Sphere>(glm::vec3(-0.5, -1.0, 1.0), 1.0,
                                          glm::vec3(1.0, 0.0, 0.0),
                                          glm::vec3(1.0, 1.0, 0.5),
@@ -143,10 +201,8 @@ int main(int argc, char **argv)
                                          glm::vec3(0.1, 0.1, 0.1), 100);
             shapes.push_back(sphere3);
             
-            light1 = make_shared<Light>(glm::vec3(1,2,2), 0.5);
+            light1 = make_shared<Light>(glm::vec3(-2,1,1), 1);
             lights.push_back(light1);
-            light2 = make_shared<Light>(glm::vec3(-1,2,-1), 0.5);
-            lights.push_back(light2);
             break;
             
         case 3:
@@ -192,12 +248,14 @@ int main(int argc, char **argv)
                                          glm::vec3(0.0, 0.0, 0.0),
                                          glm::vec3(0.1, 0.1, 0.1), 0);
             sphere3->reflective = true;
+            sphere3->reflectiveComponent = glm::vec3(1,1,1);
             shapes.push_back(sphere3);
             sphere4 = make_shared<Sphere>(glm::vec3(1.5, 0.0, -1.5), 1.0,
                                          glm::vec3(0.0, 0.0, 0.0),
                                          glm::vec3(0.0, 0.0, 0.0),
                                          glm::vec3(0.0, 0.0, 0.0), 0);
             sphere4->reflective = true;
+            sphere4->reflectiveComponent = glm::vec3(1,1,1);
             shapes.push_back(sphere4);
             
             plane1 = make_shared<Plane>(glm::vec3(0.0, -1.0, 0.0), 1.0,
@@ -218,11 +276,113 @@ int main(int argc, char **argv)
             light2 = make_shared<Light>(glm::vec3(0.5,-0.5,0.0), 0.5);
             lights.push_back(light2);
             break;
+        case 6:{
+            // Load geometry
+            vector<float> posBuf; // list of vertex positions
+            vector<float> norBuf; // list of vertex normals
+            vector<float> texBuf; // list of vertex texture coords
+            tinyobj::attrib_t attrib;
+            std::vector<tinyobj::shape_t> shap;
+            std::vector<tinyobj::material_t> materials;
+            string errStr;
+            string meshName = "../../resources/bunny.obj";
+            bool rc = tinyobj::LoadObj(&attrib, &shap, &materials, &errStr, meshName.c_str());
+            if(!rc) {
+                cerr << errStr << endl;
+            } else {
+                // Some OBJ files have different indices for vertex positions, normals,
+                // and texture coordinates. For example, a cube corner vertex may have
+                // three different normals. Here, we are going to duplicate all such
+                // vertices.
+                // Loop over shapes
+                for(size_t s = 0; s < shap.size(); s++) {
+                    // Loop over faces (polygons)
+                    size_t index_offset = 0;
+                    for(size_t f = 0; f < shap[s].mesh.num_face_vertices.size(); f++) {
+                        size_t fv = shap[s].mesh.num_face_vertices[f];
+                        // Loop over vertices in the face.
+                        for(size_t v = 0; v < fv; v++) {
+                            // access to vertex
+                            tinyobj::index_t idx = shap[s].mesh.indices[index_offset + v];
+                            posBuf.push_back(attrib.vertices[3*idx.vertex_index+0]);
+                            posBuf.push_back(attrib.vertices[3*idx.vertex_index+1]);
+                            posBuf.push_back(attrib.vertices[3*idx.vertex_index+2]);
+                            if(!attrib.normals.empty()) {
+                                norBuf.push_back(attrib.normals[3*idx.normal_index+0]);
+                                norBuf.push_back(attrib.normals[3*idx.normal_index+1]);
+                                norBuf.push_back(attrib.normals[3*idx.normal_index+2]);
+                            }
+                            if(!attrib.texcoords.empty()) {
+                                texBuf.push_back(attrib.texcoords[2*idx.texcoord_index+0]);
+                                texBuf.push_back(attrib.texcoords[2*idx.texcoord_index+1]);
+                            }
+                        }
+                        index_offset += fv;
+                        // per-face material (IGNORE)
+                        shap[s].mesh.material_ids[f];
+                    }
+                }
+            }
+            cout << "Number of vertices: " << posBuf.size()/3 << endl;
+            vector<double*> vertices;
+            for(int i=0; i<posBuf.size()-2; i+=3){
+                double vertex[3];
+                vertex[0] = posBuf[i];
+                vertex[1] = posBuf[i+1];
+                vertex[2] = posBuf[i+2];
+                vertices.push_back(vertex);
+            }
+            vector<float> bounds = findBounds(vertices);
+            float xDist = bounds[1]-bounds[0];
+            float yDist = bounds[3]-bounds[2];
+            float zDist = bounds[5]-bounds[4];
+            float scale = max(xDist,yDist);
+            scale = max(scale, zDist);
+            
+            sphere1 = make_shared<Sphere>(glm::vec3(xDist/2, yDist/2, zDist/2), scale,
+                                         glm::vec3(1.0, 0.0, 0.0),
+                                         glm::vec3(1.0, 1.0, 0.5),
+                                         glm::vec3(0.1, 0.1, 0.1), 100);
+            //shapes.push_back(sphere1);
+            
+            light1 = make_shared<Light>(glm::vec3(-1,2,1), 0.5);
+            lights.push_back(light1);
+            vector<double*> dist;
+            vector<double*> bary;
+            for(int i=0; i<camera->rays.size(); i++){
+                if(sphere1->intersection(camera->pos, camera->rays[i], 0, MAXFLOAT)){
+                    double *t = new double(MAXFLOAT);
+                    double *u = new double;
+                    double *v = new double;
+                    float tF, uF, vF;
+                    double origin[3] = {camera->pos.x,camera->pos.y,camera->pos.z};
+                    double dir[3] = {camera->rays[i]->ray.x,camera->rays[i]->ray.y,camera->rays[i]->ray.z};
+                    for(int j=0; j<vertices.size()-2; j+=3){
+                        if(intersect_triangle(origin, dir, vertices[j], vertices[j+1], vertices[j+2], t, u, v)){
+                            if(*t>0 && *t<tF){
+                                tF = *t;
+                                uF = *u;
+                                vF = *v;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
         default:
             break;
     }
+    if(scene != 0){
+        render(camera, shapes, lights, image);
+    }else if(scene == 0){
+        motionBlur = true;
+        for(int i=0; i<10; i++){
+            shapes[0]->pos = glm::vec3(0.5-(float)i/5, -0.7, 0.5+(float)i/5);
+            render(camera, shapes, lights, image);
+        }
+    }
     
-    render(camera, shapes, lights, image);
     image->writeToFile(imgName);
     return 0;
 }

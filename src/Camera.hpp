@@ -18,20 +18,24 @@ struct Ray{
     glm::vec3 ray;
     glm::vec3 intersect;
     glm::vec3 normal;
+    glm::vec3 color;
     float intDist;
     
     Ray(int _x, int _y, glm::vec3 _ray) :
     x(_x), y(_y), ray(_ray)
-    {intDist = MAXFLOAT;}
+    {   intDist = MAXFLOAT;
+        color = glm::vec3(0,0,0);
+    }
 };
 
 class Camera{
 public:
-    Camera(glm::vec3 _pos, float _fov, int _width, int _height);
+    Camera(glm::vec3 _pos, float _fov, glm::vec3 view, int _width, int _height);
     ~Camera();
     
     glm::vec3 pos;
     float fov;
+    //glm::vec3 rotate;
     std::vector<std::shared_ptr<Ray>> rays;
     
     //resolution

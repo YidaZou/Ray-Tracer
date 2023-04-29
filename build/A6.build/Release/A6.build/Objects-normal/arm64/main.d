@@ -1,6 +1,4 @@
 dependencies: /Users/young/CSCE441/A6/src/main.cpp \
-  /Users/young/CSCE441/glew-2.1.0/include/GL/glew.h \
-  /Users/young/CSCE441/glfw-3.3.8/include/GLFW/glfw3.h \
   /Users/young/CSCE441/glm-0.9.9.8/glm/glm.hpp \
   /Users/young/CSCE441/glm-0.9.9.8/glm/detail/_fixes.hpp \
   /Users/young/CSCE441/glm-0.9.9.8/glm/detail/setup.hpp \
@@ -252,4 +250,7 @@ dependencies: /Users/young/CSCE441/A6/src/main.cpp \
   /Users/young/CSCE441/A6/src/Camera.hpp \
   /Users/young/CSCE441/A6/src/MatrixStack.h \
   /Users/young/CSCE441/A6/src/Image.h \
-  /Users/young/CSCE441/A6/src/Light.hpp
+  /Users/young/CSCE441/A6/src/Light.hpp \
+  /Users/young/CSCE441/A6/src/raytri.c \
+  /Users/young/CSCE441/A6/src/boundingBox.h \
+  /Users/young/CSCE441/A6/src/tiny_obj_loader.h

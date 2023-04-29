@@ -27,6 +27,7 @@ public:
     glm::vec3 ambient;
     float exponent;
     bool reflective;
+    glm::vec3 reflectiveComponent;
     
 };
 
