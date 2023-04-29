@@ -26,6 +26,7 @@ public:
     glm::vec3 specular;
     glm::vec3 ambient;
     float exponent;
+    bool reflective;
     
 };
 

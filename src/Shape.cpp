@@ -19,7 +19,7 @@ diffuse(_diffuse),
 specular(_specular),
 ambient(_ambient),
 exponent(_exponent)
-{}
+{reflective = false;}
 
 Shape::~Shape()
 {}
