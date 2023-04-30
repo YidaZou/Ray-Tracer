@@ -253,4 +253,5 @@ dependencies: /Users/young/CSCE441/A6/src/main.cpp \
   /Users/young/CSCE441/A6/src/Light.hpp \
   /Users/young/CSCE441/A6/src/raytri.c \
   /Users/young/CSCE441/A6/src/boundingBox.h \
+  /Users/young/CSCE441/A6/src/triangle.h \
   /Users/young/CSCE441/A6/src/tiny_obj_loader.h

@@ -123,3 +123,32 @@ float Ellipsoid::intersection(glm::vec3 &p, shared_ptr<Ray> r, float near, float
     }
     return 0;
 }
+
+float Cylinder::intersection(glm::vec3 &p, shared_ptr<Ray> r, float near, float far){
+    float a = pow(r->ray.x,2) + pow(r->ray.z,2);
+    float b = 2*(r->ray.x * (p.x-pos.x) + r->ray.z * (p.z - pos.z));
+    float c = pow(p.x - pos.x, 2) + pow(p.z - pos.z, 2) - pow(scale,2); //scale == radius
+    float d = pow(b,2) - 4*a*c;
+    
+    float t;
+    if(d > 0){
+        float tP = (-b + sqrt(d))/(2*a);
+        float tM = (-b - sqrt(d))/(2*a);
+        t = min(tP,tM); //take closest
+        if(t < r->intDist && t > near && t < far){
+            r->intersect = p + t*r->ray;
+            r->normal = glm::normalize(r->intersect - pos);
+            r->intDist = t;
+            return t;
+        }
+    }else if(abs(d) <= 0.0001){
+        t = (-b + sqrt(d))/(2*a);
+        if(t < r->intDist && t > near && t < far){
+            r->intersect = p + t*r->ray;
+            r->normal = glm::normalize(r->intersect - pos);
+            r->intDist = t;
+            return t;
+        }
+    }
+    return 0;
+}

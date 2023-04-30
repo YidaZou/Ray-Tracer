@@ -16,6 +16,7 @@
 #include <algorithm>
 #include "raytri.c"
 #include "boundingBox.h"
+#include "triangle.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
@@ -26,6 +27,7 @@ shared_ptr<Sphere> sphere1;
 shared_ptr<Sphere> sphere2;
 shared_ptr<Sphere> sphere3;
 shared_ptr<Sphere> sphere4;
+shared_ptr<Cylinder> cylinder1;
 shared_ptr<Plane> plane1;
 shared_ptr<Plane> plane2;
 shared_ptr<Ellipsoid> ellipsoid1;
@@ -36,6 +38,87 @@ vector<shared_ptr<Light>> lights;
 shared_ptr<Camera> camera;
 
 bool motionBlur = false;
+
+glm::vec3 blinnPhongOBJ(shared_ptr<Ray> R, shared_ptr<Sphere> sphere1, glm::vec3 &origin, vector<shared_ptr<Light>> &lights, vector<double*> &vertices, glm::vec3 &normal){
+    
+    glm::vec3 V = glm::normalize(origin - R->intersect);
+    glm::vec3 finalColor = sphere1->ambient;
+    
+    for(int i=0; i<lights.size(); i++){
+        //check shadow
+        float lightDist = glm::distance(lights[i]->pos, R->intersect);
+        double *t = new double(MAXFLOAT);
+        double *u = new double;
+        double *v = new double;
+        float tF = MAXFLOAT;
+        double origin[3] = {lights[i]->pos.x,lights[i]->pos.y,lights[i]->pos.z};
+        double dir[3] = {R->ray.x,R->ray.y,R->ray.z};
+        for(int j=0; j<vertices.size()-2; j+=3){
+            if(intersect_triangle(origin, dir, vertices[j], vertices[j+1], vertices[j+2], t, u, v)){
+                if(*t>0 && *t<tF){
+                    tF = *t;
+                }
+            }
+        }
+        if(lightDist < tF){  //not in shadow
+            glm::vec3 l1 = normalize(lights[i]->pos - R->intersect);
+            glm::vec3 cd1 = sphere1->diffuse * max(0.0f, glm::dot(l1, normal));
+            glm::vec3 h1 = glm::normalize(l1 + V);//normalize(l1 + camera->pos);
+            glm::vec3 cs1 = sphere1->specular * pow(max(0.0f,dot(h1,normal)), sphere1->exponent);
+            glm::vec3 color = lights[i]->intensity * (cd1 + cs1);
+            finalColor += color;
+        }
+    }
+    
+    return finalColor;
+}
+
+void renderOBJ(shared_ptr<Camera> camera, shared_ptr<Sphere> sphere1, vector<shared_ptr<Light>> &lights, shared_ptr<Image> image, vector<double*> &vertices, vector<float*> &normals){
+    for(int i=0; i<camera->rays.size(); i++){
+        if(sphere1->intersection(camera->pos, camera->rays[i], 0, MAXFLOAT)){
+            double *t = new double(MAXFLOAT);
+            double *u = new double(-1);
+            double *v = new double(-1);
+            float tF = MAXFLOAT;
+            float uF, vF;
+            double origin[3] = {camera->pos.x,camera->pos.y,camera->pos.z};
+            double dir[3] = {camera->rays[i]->ray.x,camera->rays[i]->ray.y,camera->rays[i]->ray.z};
+            int bufPos = -1;
+            for(int j=0; j<vertices.size()-2; j+=3){
+                if(intersect_triangle(origin, dir, vertices[j], vertices[j+1], vertices[j+2], t, u, v)){
+                    if(*t>0 && *t<tF){
+                        tF = *t;
+                        uF = *u;
+                        vF = *v;
+                        bufPos = j;
+                        glm::vec3 baryCoord =   (1-uF-vF)*glm::vec3(vertices[j][0],vertices[j][1],vertices[j][2]) +
+                                                uF*glm::vec3(vertices[j+1][0],vertices[j+1][1],vertices[j+1][2]) +
+                                                vF*glm::vec3(vertices[j+2][0],vertices[j+2][1],vertices[j+2][2]);
+                        camera->rays[i]->intersect = baryCoord;
+                    }
+                }
+            }
+            //cout<< tF << endl;
+            if(bufPos != -1){   //checked last shape
+                glm::vec3 normal =  (1-uF-vF)*glm::vec3(normals[bufPos][0],normals[bufPos][1],normals[bufPos][2]) +
+                                    uF*glm::vec3(normals[bufPos+1][0],normals[bufPos+1][1],normals[bufPos+1][2]) +
+                                    vF*glm::vec3(normals[bufPos+2][0],normals[bufPos+2][1],normals[bufPos+2][2]);
+                glm::vec3 color = blinnPhongOBJ(camera->rays[i], sphere1, camera->pos, lights, vertices, normal);
+                glm::vec3 finalColor;
+                finalColor = 255.0f*color;
+                
+                if (finalColor.r < 0){finalColor.r = 0;}
+                if (finalColor.r > 255){finalColor.r = 255;}
+                if (finalColor.g < 0){finalColor.g = 0;}
+                if (finalColor.g > 255){finalColor.g = 255;}
+                if (finalColor.b < 0){finalColor.b = 0;}
+                if (finalColor.b > 255){finalColor.b = 255;}
+                image->setPixel(camera->rays[i]->x, camera->rays[i]->y, finalColor.r, finalColor.g, finalColor.b);
+            
+            }
+        }
+    }
+}
 
 glm::vec3 blinnPhong(shared_ptr<Ray> R, int &sI, glm::vec3 &origin, vector<shared_ptr<Shape>> &shapes, vector<shared_ptr<Light>> &lights, int recursion){
     if(recursion > 10){ //# of bounces
@@ -102,7 +185,7 @@ void render(shared_ptr<Camera> camera, vector<shared_ptr<Shape>> &shapes, vector
             glm::vec3 color = blinnPhong(camera->rays[j], closestShapeI, camera->pos, shapes, lights, 0);
             glm::vec3 finalColor;
             if(motionBlur){
-                camera->rays[j]->color += color*0.8f;
+                camera->rays[j]->color += color*0.1f;
                 finalColor = 255.0f*camera->rays[j]->color;
             }else{
                 finalColor = 255.0f*color;
@@ -143,6 +226,11 @@ int main(int argc, char **argv)
                                          glm::vec3(1.0, 1.0, 0.5),
                                          glm::vec3(0.1, 0.1, 0.1), 100);
             shapes.push_back(sphere1);
+            cylinder1 = make_shared<Cylinder>(glm::vec3(-1.5, 0, 0.5), 0.1,
+                                         glm::vec3(1.0, 0.0, 0.0),
+                                         glm::vec3(1.0, 1.0, 0.5),
+                                         glm::vec3(0.1, 0.1, 0.1), 100);
+            shapes.push_back(cylinder1);
             sphere2 = make_shared<Sphere>(glm::vec3(1.0, -0.7, 0.0), 0.3,
                                          glm::vec3(0.0, 0.0, 1.0),
                                          glm::vec3(1.0, 1.0, 0.5),
@@ -150,16 +238,16 @@ int main(int argc, char **argv)
             shapes.push_back(sphere2);
             
             sphere3 = make_shared<Sphere>(glm::vec3(-0.5, 0.0, -0.5), 1.0,
-                                          glm::vec3(0.0, 0.0, 1.0),
-                                          glm::vec3(1.0, 1.0, 0.5),
-                                          glm::vec3(0.1, 0.1, 0.1), 100);
+                                         glm::vec3(0.0, 0.5, 0.5),
+                                         glm::vec3(0.0, 0.0, 0.0),
+                                         glm::vec3(0.1, 0.1, 0.1), 0);
             sphere3->reflective = true;
             sphere3->reflectiveComponent = glm::vec3(0.3,0.3,0.3);
             shapes.push_back(sphere3);
             sphere4 = make_shared<Sphere>(glm::vec3(1.5, 0.0, -1.5), 1.0,
-                                          glm::vec3(0.0, 1.0, 0.0),
-                                          glm::vec3(1.0, 1.0, 0.5),
-                                          glm::vec3(0.1, 0.1, 0.1), 100);
+                                         glm::vec3(0.0, 0.5, 0.0),
+                                         glm::vec3(0.0, 0.0, 0.0),
+                                         glm::vec3(0.0, 0.0, 0.0), 0);
             sphere4->reflective = true;
             sphere4->reflectiveComponent = glm::vec3(0.3,0.3,0.3);
             shapes.push_back(sphere4);
@@ -230,6 +318,7 @@ int main(int argc, char **argv)
             light2 = make_shared<Light>(glm::vec3(-1,2,-1), 0.5);
             lights.push_back(light2);
             break;
+            
         case 4:
         case 5:
             sphere1 = make_shared<Sphere>(glm::vec3(0.5, -0.7, 0.5), 0.3,
@@ -325,60 +414,51 @@ int main(int argc, char **argv)
             }
             cout << "Number of vertices: " << posBuf.size()/3 << endl;
             vector<double*> vertices;
+            vector<float*> normals;
             for(int i=0; i<posBuf.size()-2; i+=3){
-                double vertex[3];
+                double* vertex = new double[3];
                 vertex[0] = posBuf[i];
                 vertex[1] = posBuf[i+1];
                 vertex[2] = posBuf[i+2];
                 vertices.push_back(vertex);
+                float* normal = new float[3];
+                normal[0] = norBuf[i];
+                normal[1] = norBuf[i+1];
+                normal[2] = norBuf[i+2];
+                normals.push_back(normal);
             }
+            /*
+            for(int i=0; i<vertices.size(); i++){
+                cout<<vertices[i][0]<<endl;
+            }
+             */
             vector<float> bounds = findBounds(vertices);
             float xDist = bounds[1]-bounds[0];
             float yDist = bounds[3]-bounds[2];
             float zDist = bounds[5]-bounds[4];
             float scale = max(xDist,yDist);
             scale = max(scale, zDist);
-            
-            sphere1 = make_shared<Sphere>(glm::vec3(xDist/2, yDist/2, zDist/2), scale,
-                                         glm::vec3(1.0, 0.0, 0.0),
+            cout << scale <<endl;
+            sphere1 = make_shared<Sphere>(glm::vec3(0,1,0), scale,
+                                         glm::vec3(0.0, 0.0, 1.0),
                                          glm::vec3(1.0, 1.0, 0.5),
                                          glm::vec3(0.1, 0.1, 0.1), 100);
-            //shapes.push_back(sphere1);
-            
-            light1 = make_shared<Light>(glm::vec3(-1,2,1), 0.5);
+            light1 = make_shared<Light>(glm::vec3(-1,1,1), 1.0);
             lights.push_back(light1);
             vector<double*> dist;
             vector<double*> bary;
-            for(int i=0; i<camera->rays.size(); i++){
-                if(sphere1->intersection(camera->pos, camera->rays[i], 0, MAXFLOAT)){
-                    double *t = new double(MAXFLOAT);
-                    double *u = new double;
-                    double *v = new double;
-                    float tF, uF, vF;
-                    double origin[3] = {camera->pos.x,camera->pos.y,camera->pos.z};
-                    double dir[3] = {camera->rays[i]->ray.x,camera->rays[i]->ray.y,camera->rays[i]->ray.z};
-                    for(int j=0; j<vertices.size()-2; j+=3){
-                        if(intersect_triangle(origin, dir, vertices[j], vertices[j+1], vertices[j+2], t, u, v)){
-                            if(*t>0 && *t<tF){
-                                tF = *t;
-                                uF = *u;
-                                vF = *v;
-                            }
-                        }
-                    }
-                }
-            }
-            
+            renderOBJ(camera, sphere1, lights, image, vertices, normals);
         }
         default:
             break;
     }
-    if(scene != 0){
+    if(scene != 0 && scene != 6){
         render(camera, shapes, lights, image);
     }else if(scene == 0){
         motionBlur = true;
         for(int i=0; i<10; i++){
-            shapes[0]->pos = glm::vec3(0.5-(float)i/5, -0.7, 0.5+(float)i/5);
+            shapes[0]->pos = glm::vec3(0.5-(float)i/10, -0.7, 0.5+(float)i/10);
+            camera->resetRays();
             render(camera, shapes, lights, image);
         }
     }

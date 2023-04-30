@@ -32,7 +32,7 @@ class Camera{
 public:
     Camera(glm::vec3 _pos, float _fov, glm::vec3 view, int _width, int _height);
     ~Camera();
-    
+    void resetRays();
     glm::vec3 pos;
     float fov;
     //glm::vec3 rotate;

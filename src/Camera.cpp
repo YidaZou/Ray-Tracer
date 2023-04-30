@@ -14,7 +14,6 @@ Camera::Camera(glm::vec3 _pos, float _fov, glm::vec3 view, int _width, int _heig
     //maps rays to pixels
     //topLeft -> bottomRight
     //aspect ratio is 1
-    float z = -1;
     for(float i=0; i<width; i++){
         for(float j=0; j<height; j++){
             float x = (2*(i+0.5)/width - 1) * tan(fov * 0.5);
@@ -34,5 +33,12 @@ Camera::Camera(glm::vec3 _pos, float _fov, glm::vec3 view, int _width, int _heig
 };
 
 Camera::~Camera(){}
+
+void Camera::resetRays(){
+    for(auto r : rays){
+        r->intDist = MAXFLOAT;
+    }
+}
+
 
 

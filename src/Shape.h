@@ -62,4 +62,13 @@ private:
 
 };
 
+class Cylinder : public Shape{
+public:
+    //void initSphere(float _r){this->r = _r;}
+    using Shape::Shape;
+    float intersection(glm::vec3 &p, std::shared_ptr<Ray> r, float near, float far);
+private:
+
+};
+
 #endif

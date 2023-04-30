@@ -1,15 +1,22 @@
-# A5
+# A6
 Yida Zou
 730004766
 yida.zou@tamu.edu
 
-I finished all tasks up to and including the 1st Bonus for window resizing.
+I finished all tasks up to scene 8 and some bonus tasks.
  
-For task 6 uncomment lines 54-57 in phong_frag.glsl to see the respective 4 images.
-line 54: position
-line 55: normal
-line 56: emissive
-line 57: diffuse
+The bonus tasks are shown in scene 0.
+I've done:
+[+3] Infinite Cylinder
+[+5] Blend Reflection
+[+5] Motion Blur
+
+The bonus scene may take a bit longer than the rest.
+I've included a picture of the bonus scene as well in resources/bonus.png.
+
+I used this source to help code the equations for the cylinder:
+https://mrl.cs.nyu.edu/~dzorin/rendering/lectures/lecture3/lecture3-6pp.pdf
+
 
 
 
